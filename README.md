@@ -2,9 +2,6 @@
 
 This project is a web interface for [testssl.sh](https://testssl.sh/). It can be used to offer internal TLS/SSL configuration check portals, whereever the usual public tools are not applicable.
 
-![Webfrontend](/screenshots/testssl.sh-webfrontend.png)
-![Result](/screenshots/testssl.sh-result.png)
-
 ## Installation
 
 1. Clone the [testssl.sh-webfrontend](https://github.com/TKCERT/testssl.sh-webfrontend) repository with its main dependency [testssl.sh](https://github.com/drwetter/testssl.sh) by invocation of `git clone --recursive https://github.com/TKCERT/testssl.sh-webfrontend.git`.
