@@ -114,15 +114,21 @@ def main():
             check = Popen(args, stdout=PIPE, stderr=PIPE)
             output, err = check.communicate(timeout=checkTimeout)
             if check.returncode != 0:
-                output = err
+                output += err
                 flash("SSL Scan failed with error code " + str(check.returncode) + " - see below for details")
         except TimeoutExpired as e:
             flash("SSL Scan timed out")
             check.terminate()
 
         html = "<pre>" + str(output, 'utf-8') + "</pre>"
+
+        # Build command line
+        args = [rendererCmd]
+        args += rendererArgs
+
+        # Render logfile
         try:
-            renderer = Popen([rendererCmd], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            renderer = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
             html, err = renderer.communicate(input=output, timeout=rendererTimeout)
             if renderer.returncode != 0:
                 html = "<pre>" + str(err, 'utf-8') + "</pre>"
