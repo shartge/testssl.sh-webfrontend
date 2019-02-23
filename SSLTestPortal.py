@@ -113,7 +113,7 @@ def main():
         try:
             check = Popen(args, stdout=PIPE, stderr=PIPE)
             output, err = check.communicate(timeout=checkTimeout)
-            if check.returncode != 0:
+            if check.returncode > 128:
                 output += err
                 flash("SSL Scan failed with error code " + str(check.returncode) + " - see below for details")
         except TimeoutExpired as e:
