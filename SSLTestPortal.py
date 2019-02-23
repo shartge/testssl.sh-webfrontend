@@ -141,4 +141,4 @@ def main():
         return render_template("result.html", result=str(html, 'utf-8'))
 
 if __name__ == "__main__":
-    application.run()
+    application.run(host='0.0.0.0')
