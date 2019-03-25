@@ -28,7 +28,7 @@ resultDirJSON = "output"
 resultDirHTML = "output"
 checkCmd = "testssl.sh/testssl.sh"
 checkArgs = ["--quiet", "--logfile=" + logDir, "--jsonfile=" + resultDirJSON]
-checkTimeout = 300
+checkTimeout = int(os.environ.get("CHECKTIMEOUT", default=300))
 rendererCmd = "aha"
 rendererArgs = ["-n"]
 rendererTimeout = 30
