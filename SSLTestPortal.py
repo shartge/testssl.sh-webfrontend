@@ -118,7 +118,7 @@ def main():
                 flash("SSL Scan failed with error code " + str(check.returncode) + " - see below for details")
         except TimeoutExpired as e:
             flash("SSL Scan timed out")
-            check.terminate()
+            check.kill()
 
         html = "<pre>" + str(output, 'utf-8') + "</pre>"
 
