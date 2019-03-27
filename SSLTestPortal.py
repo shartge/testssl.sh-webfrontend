@@ -51,7 +51,7 @@ def main():
         if not reHost.match(host):
             flash("Wrong host name!")
             ok = False
-        if host == "localhost" or host.find("127.") == 0:
+        if host == "localhost" or host.find("127.") == 0 or host == "::1":
             flash("I was already pentested ;)")
             ok = False
 
@@ -63,6 +63,11 @@ def main():
         except:
             flash("Port number must be numeric")
             ok = False
+
+        if 'fullscan' in request.form and request.form['fullscan'] == "yes":
+            fullscan = True
+        else:
+            fullscan = False
 
         if 'starttls' in request.form and request.form['starttls'] == "yes":
             starttls = True
@@ -103,10 +108,15 @@ def main():
         # Build command line
         args = [checkCmd]
         args += checkArgs
+
+        if not fullscan:
+            args.append("--ids-friendly")
+
         if starttls:
             args.append("-t")
             args.append(protocol)
         args.append(host + ":" + str(port))
+
 
         # Perform test
         output = b""
