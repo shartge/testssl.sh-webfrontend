@@ -17,17 +17,13 @@ import os
 from os import urandom
 from subprocess import Popen, PIPE, CalledProcessError, TimeoutExpired
 import re
-from datetime import datetime
 import socket
 
 application = Flask(__name__)
 
 ### Configuration ###
-logDir = "output"
-resultDirJSON = "output"
-resultDirHTML = "output"
 checkCmd = "testssl.sh/testssl.sh"
-checkArgs = ["--quiet", "--logfile=" + logDir, "--jsonfile=" + resultDirJSON]
+checkArgs = ["--quiet"]
 checkTimeout = int(os.environ.get("CHECKTIMEOUT", default=300))
 rendererCmd = "aha"
 rendererArgs = ["-n"]
@@ -81,14 +77,6 @@ def main():
 
         if not ('confirm' in request.form and request.form['confirm'] == "yes"):
             flash("You must confirm that you are authorized to scan the given system!")
-            ok = False
-
-        if not os.path.isdir(resultDirJSON):
-            flash("JSON log directory not present?")
-            ok = False
-
-        if not os.path.isdir(resultDirHTML):
-            flash("HTML log directory not present")
             ok = False
 
         # Perform preflight request to prevent that testssl.sh runs into long timeout
@@ -147,13 +135,6 @@ def main():
             flash("HTML formatting failed - see raw output below")
             renderer.terminate()
 
-        ts = datetime.now()
-        try:
-            resultfile = open(resultDirHTML + "/" + ts.strftime("%Y%m%d-%H%M%S.%f") + "-" + host + "_" + str(port) + ".html", mode='w')
-            resultfile.write(str(html, 'utf-8'))
-            resultfile.close()
-        except:
-            pass
         return render_template("result.html", result=str(html, 'utf-8'))
 
 if __name__ == "__main__":
