@@ -25,6 +25,7 @@ application = Flask(__name__)
 checkCmd = "testssl.sh/testssl.sh"
 checkArgs = ["--quiet"]
 checkTimeout = int(os.environ.get("CHECKTIMEOUT", default=300))
+testsslDebug = int(os.environ.get("TESTSSLDEBUG", default=0))
 rendererCmd = "aha"
 rendererArgs = ["-n"]
 rendererTimeout = 30
@@ -96,6 +97,8 @@ def main():
         # Build command line
         args = [checkCmd]
         args += checkArgs
+
+        args.append("--debug="+str(testsslDebug))
 
         if not fullscan:
             args.append("--ids-friendly")
