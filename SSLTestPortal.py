@@ -12,12 +12,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import Flask, request, redirect, session, render_template, url_for, flash
+from flask import Flask, Response, request, redirect, session, render_template, url_for, flash, escape, stream_with_context
 import os
 from os import urandom
 from subprocess import Popen, PIPE, CalledProcessError, TimeoutExpired
 import re
 import socket
+
+SENTINEL = '------------SPLIT----------HERE---------'
 
 application = Flask(__name__)
 
@@ -39,6 +41,7 @@ application.secret_key = urandom(32)
 
 @application.route("/", methods=['GET', 'POST'])
 def main():
+
     if request.method == 'GET':                         # Main Page
         return render_template("main.html")
     elif request.method == 'POST':                      # Perform Test
@@ -95,50 +98,47 @@ def main():
             return redirect(url_for('main'))
 
         # Build command line
-        args = [checkCmd]
-        args += checkArgs
+        testssl_args = [checkCmd]
+        testssl_args += checkArgs
 
-        args.append("--debug="+str(testsslDebug))
+        testssl_args.append("--debug="+str(testsslDebug))
 
         if not fullscan:
-            args.append("--ids-friendly")
+            testssl_args.append("--ids-friendly")
 
         if starttls:
-            args.append("-t")
-            args.append(protocol)
-        args.append(host + ":" + str(port))
+            testssl_args.append("-t")
+            testssl_args.append(protocol)
+        testssl_args.append(host + ":" + str(port))
 
+
+        # Build render command line
+        render_args = [rendererCmd]
+        render_args += rendererArgs
 
         # Perform test
-        output = b""
-        try:
-            check = Popen(args, stdout=PIPE, stderr=PIPE)
+
+        def runtest():
+            first, _, last = render_template('result.html', result=SENTINEL).partition(SENTINEL)
+            yield first
+            check = Popen(testssl_args, shell=False, stdout=PIPE, stderr=PIPE)
+            for line in iter(check.stdout.readline, b''):
+                renderer = Popen(render_args, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                html, err = renderer.communicate(input=line)
+                if renderer.returncode != 0:
+                    html = "<pre>HTML formatting failed with error code " + str(renderer.returncode) + " - see raw output below</pre>"
+                    html += "<pre>" + str(err, 'utf-8') + "</pre>"
+                    yield str(html, 'utf-8')
+                    break
+                yield str(html, 'utf-8')
             output, err = check.communicate(timeout=checkTimeout)
             if check.returncode > 128:
-                output += err
-                flash("SSL Scan failed with error code " + str(check.returncode) + " - see below for details")
-        except TimeoutExpired as e:
-            flash("SSL Scan timed out")
+                yield str(err, 'utf-8')
+            yield last
             check.kill()
+            renderer.kill()
 
-        html = "<pre>" + str(output, 'utf-8') + "</pre>"
-
-        # Build command line
-        args = [rendererCmd]
-        args += rendererArgs
-
-        # Render logfile
-        try:
-            renderer = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-            html, err = renderer.communicate(input=output, timeout=rendererTimeout)
-            if renderer.returncode != 0:
-                html = "<pre>" + str(err, 'utf-8') + "</pre>"
-                flash("HTML formatting failed with error code " + str(renderer.returncode) + " - see raw output below")
-        except TimeoutExpired as e:
-            flash("HTML formatting failed - see raw output below")
-            renderer.terminate()
-
-        return render_template("result.html", result=str(html, 'utf-8'))
+        return Response(stream_with_context(runtest()), mimetype='text/html')
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0')
