@@ -1,17 +1,20 @@
 {% extends "app.html" %}
 {% block content %}
 <script>
-function getDocHeight() {
-	var D = document;
-	return Math.max(
-		Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
-		Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
-		Math.max(D.body.clientHeight, D.documentElement.clientHeight)
-	);
-}
-var scroller = setInterval(function() {	document.documentElement.scrollTop = getDocHeight();},100);
+	function getDocHeight() {
+		var D = document;
+		return Math.max(
+			Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+			Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+			Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+		);
+	}
+	var scroller = setInterval(function() {	
+		document.documentElement.scrollTop = getDocHeight();
+	},100 );
 </script>
-<h1>Result - <a href="">New check</a> </h1>
+<h1 id="topofpage"><div id=pagetitle>Test running, please wait ...</div> <div id="returnlink" style="visibility:hidden"><a href="">Click for new test</a></div></h1>
+<h1 id="result" style="visibility:hidden">Result:</h1>
 {% for message in get_flashed_messages() %}
 <div class="errormsg">{{ message }}</div>
 {% endfor %}
@@ -21,7 +24,13 @@ var scroller = setInterval(function() {	document.documentElement.scrollTop = get
 </pre>
 </div>
 <hr>
+<h3><span class="label label-default col-sm-8"><a href="#topofpage">Back to top</a></span></h3>
+<hr>
 <script>
-clearInterval(scroller);
+	document.getElementById("pagetitle").innerText="Test done.";
+	document.getElementById("returnlink").style="";
+	document.getElementById("result").style="";
+	document.documentElement.scrollTop = getDocHeight();
+	clearInterval(scroller);
 </script>
 {% endblock %}
