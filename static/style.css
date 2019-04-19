@@ -11,6 +11,10 @@
     padding: 10px;
 }
 
+a {
+   color: black;
+}
+
 .progress-style {
     text-align: left;
 }
