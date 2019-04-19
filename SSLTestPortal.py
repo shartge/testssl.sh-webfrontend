@@ -95,7 +95,7 @@ def main():
                 ok = False
 
         if not ok:
-            return redirect(url_for('main'))
+            return render_template("main.html")
 
         # Build command line
         testssl_args = [checkCmd]
