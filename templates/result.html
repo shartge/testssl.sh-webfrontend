@@ -13,7 +13,7 @@
 		document.documentElement.scrollTop = getDocHeight();
 	},100 );
 </script>
-<h1 id="topofpage"><div id="pagetitle">Test running, please wait ...</div><div id="returnlink" style="visibility:hidden"><a href="">Test done: click for new test</a></div></h1>
+<h1 id="topofpage"><div id="pagetitle">Test running, please wait ...</div><div id="returnlink" style="visibility:hidden">Test done | <a href="">click for new test</a></div></h1>
 <h1 id="result" style="visibility:hidden">Result:</h1>
 {% for message in get_flashed_messages() %}
 <div class="errormsg">{{ message }}</div>

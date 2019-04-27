@@ -140,5 +140,23 @@ def main():
 
         return Response(stream_with_context(runtest()), mimetype='text/html')
 
+
+@application.route("/about")
+def about():
+    # Build commmands
+    testssl_args = [checkCmd]
+    testssl_args.append("--version")
+    render_args = [rendererCmd]
+    render_args += rendererArgs
+    # Get version output from testssl
+    check = Popen(testssl_args, shell=False, stdout=PIPE, stderr=PIPE)
+    output, err = check.communicate()
+    # Render output as HTML
+    renderer = Popen(render_args, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    html, err = renderer.communicate(input=output)
+    check.kill()
+    renderer.kill()
+    return render_template("about.html", about=str(html, 'utf-8'))
+
 if __name__ == "__main__":
     application.run(host='0.0.0.0')
