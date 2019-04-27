@@ -13,6 +13,11 @@
 
 a {
    color: black;
+   text-decoration: underline;
+}
+
+body {
+   margin: 1%;
 }
 
 .progress-style {
