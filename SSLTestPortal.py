@@ -141,7 +141,7 @@ def main():
         return Response(stream_with_context(runtest()), mimetype='text/html')
 
 
-@application.route("/about")
+@application.route("/about/")
 def about():
     # Build commmands
     testssl_args = [checkCmd]
