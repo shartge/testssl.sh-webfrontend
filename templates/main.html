@@ -38,13 +38,13 @@ function progressContinue() {
     <div class="form-group">
         <label class="col-sm-4 control-label">Use vulnerability checks which may cause IDSs to block the scanning IP.</label>
         <div class="col-sm-4">
-            <input type="checkbox" name="fullscan" value="yes">
+            <input type="checkbox" name="fullscan" value="yes" class="form-control" />
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-4 control-label">Use STARTTLS</label>
         <div class="col-sm-4">
-            <input type="checkbox" class="checkbox" name="starttls" value="yes" class="form-control"> 
+            <input type="checkbox" class="checkbox" name="starttls" value="yes" class="form-control" /> 
             STARTTLS Protocol:
             <select name="protocol" class="form-control">
                 <option value="ftp">ftp</option>
@@ -60,13 +60,13 @@ function progressContinue() {
     <div class="form-group">
         <label class="col-sm-4 control-label">I confirm that I am authorized to scan this system.</label>
         <div class="col-sm-4">
-            <input type="checkbox" name="confirm" value="yes">
+            <input type="checkbox" name="confirm" value="yes" class="form-control" />
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-4 control-label">The SSL Check can take up to 5 minutes. Please be patient.</label>
         <div class="col-sm-4">
-            <input type="submit" class="btn btn-primary" onclick="progress()" value="Perform SSL Check">
+            <input type="submit" class="btn btn-primary" onclick="progress()" value="Perform SSL Check" />
         </div>
     </div>
 </form>
