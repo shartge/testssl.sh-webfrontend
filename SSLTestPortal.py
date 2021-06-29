@@ -32,6 +32,7 @@ rendererCmd = "aha"
 rendererArgs = ["-n"]
 rendererTimeout = 30
 protocols = ["ftp", "smtp", "pop3", "imap", "xmpp", "telnet", "ldap"]
+scantypes = ["certonly", "normal", "full"]
 reHost = re.compile("^[a-zA-Z0-9_][a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)*$")
 preflightRequest = True
 preflightTimeout = 10
@@ -64,10 +65,10 @@ def main():
             flash("Port number must be numeric")
             ok = False
 
-        if 'fullscan' in request.form and request.form['fullscan'] == "yes":
-            fullscan = True
-        else:
-            fullscan = False
+        scantype = request.form['scantype']
+        if scantype not in scantypes:
+            flash("Wrong scantype!")
+            ok = False
 
         if 'starttls' in request.form and request.form['starttls'] == "yes":
             starttls = True
@@ -103,8 +104,14 @@ def main():
 
         testssl_args.append("--debug="+str(testsslDebug))
 
-        if not fullscan:
+        if scantype == "normal":
             testssl_args.append("--ids-friendly")
+
+        if scantype == "certonly":
+            testssl_args.append("--server-defaults")
+
+        # if scantype is "full"
+        # nothing is to be done
 
         if starttls:
             testssl_args.append("-t")
