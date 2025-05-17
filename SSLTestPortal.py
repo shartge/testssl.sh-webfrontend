@@ -158,6 +158,17 @@ def about():
     # Get version output from testssl
     check = Popen(testssl_args, shell=False, stdout=PIPE, stderr=PIPE)
     output, err = check.communicate()
+
+    # Read changelog content from file
+    try:
+        with open("/testssl.sh/testssl-changelog.txt", "rb") as changelog_file:
+            changelog = changelog_file.read()
+    except IOError as e:
+        changelog = b"\n\n[Error reading changelog: %s]" % str(e).encode('utf-8')
+
+    # Append changelog to output
+    full_output = output + b"\n\n" + changelog
+
     # Render output as HTML
     renderer = Popen(render_args, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     html, err = renderer.communicate(input=output)
