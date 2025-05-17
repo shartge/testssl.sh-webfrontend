@@ -167,7 +167,7 @@ def about():
         changelog = b"\n\n[Error reading changelog: %s]" % str(e).encode('utf-8')
 
     # Append changelog to output
-    full_output = output + b"\n\n" + changelog
+    full_output = output + b"\nCommit log testssl.sh:\n\n" + changelog
 
     # Render output as HTML
     renderer = Popen(render_args, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
