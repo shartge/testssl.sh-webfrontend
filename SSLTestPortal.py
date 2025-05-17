@@ -171,7 +171,7 @@ def about():
 
     # Render output as HTML
     renderer = Popen(render_args, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    html, err = renderer.communicate(input=output)
+    html, err = renderer.communicate(input=full_output)
     check.kill()
     renderer.kill()
     return render_template("about.html", about=str(html, 'utf-8'))
