@@ -12,7 +12,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import Flask, Response, request, redirect, session, render_template, url_for, flash, escape, stream_with_context
+from flask import Flask, Response, request, redirect, session, render_template, url_for, flash, stream_with_context
+
+try:
+    from markupsafe import escape
+except ImportError:
+    from flask import escape
+
 import os
 from os import urandom
 from subprocess import Popen, PIPE, CalledProcessError, TimeoutExpired
